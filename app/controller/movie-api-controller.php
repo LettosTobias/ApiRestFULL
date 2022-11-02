@@ -17,7 +17,7 @@ class movieApiController{
         $this->data = file_get_contents("php://input"); 
     }
 
-    private function getData() {
+    private function getData(){
         return json_decode($this->data);
     }
 
@@ -60,31 +60,117 @@ class movieApiController{
 
     public function insertMovie($params = null){
 
-        $movie = $this->getData();     
+        $body = $this->getData();     
         
-        if (empty($movie->nombre) || empty($movie->descripcion) || empty($movie->estreno)) {
+        if(empty($body->nombre) || empty($body->descripcion) || empty($body->estreno) || empty($body->id_genero_fk)){
+           
             $this->view->response("Complete todos los datos", 400);
-        } else {
-            $id = $this->model->insert($movie->nombre, $movie->estreno, $movie->descripcion);
+        } 
+        else {
+
+            $id = $this->model->insert($body->nombre, $body->estreno, $body->descripcion , $body->id_genero_fk); 
             $movie = $this->model->get($id);
-            $this->view->response("La tarea se inserto con exito", 201);
+            $this->view->response($movie, 201);
         }
 
     }
 
-    public function pagination($params = null){
+    public function paginationMovie($params = null){
 
-         $limit = $params[':ID'];         
+        //  $offset = $params['OFFSET'];   
+         $limit = $params[':LIMIT'];         
          $movies = $this->model->pagination($limit);
 
-         if($movies)
-            $this->view->response($movies);
-         else
-          $this->view->response("No hay peliculas disponibles");   
+         
+         $this->view->response($movies);
+            
+        //   $this->view->response("No hay peliculas disponibles");   
+
+    }
+
+
+    public function updateMovie($params){
+
+        $id = $params[':ID'];
+        $body = $this->getData();
+        $movie = array($id , $body->nombre , $body->estreno , $body->descripcion);
+        if((empty($body->nombre) || empty($body->descripcion) || empty($body->estreno)) || !$movie){
+
+            
+           $this->view->response("Complete todos los datos o seleccione una pelicula existente" , 400);
+
+        }
+        else{
+
+            $this->model->update($id , $body->nombre , $body->descripcion ,  $body->estreno);
+            $this->view->response($movie , 201 , "Se modifico correctamente la pelicula $body->nombre"); 
+        }
+
+    }
+
+
+    public function orderAsc(){
+
+       $movies = $this->model->orderAscendiente();
+       $this->view->response($movies);
+        
 
     }
 
 
 
 
+
+
+
+    public function orderDesc(){
+
+       $movies = $this->model->orderDescendiente();
+       $this->view->response($movies);
+        
+
+    }
+
+
+
+    public function filter($params){
+
+       $genero = $params[':GENERO'];
+       $movies = $this->model->getByGender($genero);
+       
+       if($movies){
+
+       
+        $this->view->response($movies);
+
+       }
+
+       else{
+        $this->view->response("Ese genero no existe" , 404);
+
+       }
+
+    }
+
+
+
+    public function orderAscByItem($params){
+
+        $item = $params[':CAMPO'];
+        
+        $movies = $this->model->orderAscByItems($item);
+        $this->view->response($movies);
+
+    }
+
+
+
+    public function orderDescByItem($params){
+
+        $item = $params[':CAMPO'];
+        
+        $movies = $this->model->orderDescByItems($item);
+        $this->view->response($movies);
+
+    }
 }

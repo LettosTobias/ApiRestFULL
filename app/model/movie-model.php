@@ -29,6 +29,7 @@ class movieModel{
 
        $query = $this->db->prepare("SELECT * FROM peliculas WHERE id = ?");
        $query->execute([$id]);
+
        
        return $query->fetch(PDO::FETCH_OBJ);
 
@@ -44,10 +45,10 @@ class movieModel{
  
     }
 
-    public function insert($nombre, $estreno, $descripcion){
+    public function insert($nombre, $estreno, $descripcion , $genero){
 
-      $query = $this->db->prepare("INSERT INTO peliculas(nombre , estreno , descripcion , valoracion , imagen) VALUES( ? , ? , ? , ? , ? ) ");
-      $query->execute([$nombre , $estreno , $descripcion , false , null]);
+      $query = $this->db->prepare("INSERT INTO peliculas(nombre , estreno , valoracion , descripcion , id_genero_fk ) VALUES( ? , ? , ? , ? , ?) ");
+      $query->execute([$nombre , $estreno  , false , $descripcion , $genero]);
 
       // $query->execute([$title, $description, $priority, false]);
 
@@ -56,15 +57,70 @@ class movieModel{
     
     }
 
-    public function pagination($limit){
+    public function orderDescendiente(){
 
-      $query = $this->db->prepare("SELECT * FROM peliculas LIMIT = $limit ");
-      
-      $movies = $query->fetchAll(PDO::FETCH_OBJ);
-      
-      return $movies;
+      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY id  DESC");
+      $query->execute();
+      return $query->fetchAll(PDO::FETCH_OBJ);
     }
 
+
+
+    public function orderAscendiente(){
+
+      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY id  ASC");
+      $query->execute();
+
+      return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+
+
+
+    public function update($id , $nombre , $estreno , $descripcion){
+
+      $query = $this->db->prepare("UPDATE peliculas SET nombre = ? , estreno = ? , descripcion = ? WHERE id = $id");
+      $query->execute([$nombre , $estreno , $descripcion]);
+
+    }
+
+    
+
+    public function pagination($limit , $offset = null){
+
+      $query = $this->db->prepare("SELECT * FROM peliculas LIMIT 0 , $limit ");
+      $query->execute();
+      
+      
+      return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+
+
+    public function getByGender($genero){
+
+      $query = $this->db->prepare("SELECT * FROM peliculas WHERE id_genero_fk = ?");
+      $query->execute([$genero]);
+
+      return $query->fetchAll(PDO::FETCH_OBJ);
+
+    }
+
+
+    public function orderAscByItems($item){
+
+      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY $item ASC ");
+      $query->execute();
+
+      return $query->fetchAll(PDO::FETCH_OBJ);
+
+    }
+    public function orderDescByItems($item){
+
+      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY $item DESC ");
+      $query->execute();
+
+      return $query->fetchAll(PDO::FETCH_OBJ);
+
+    }
 
 
 
