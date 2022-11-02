@@ -40,7 +40,7 @@ class movieModel{
 
     public function delete($id){
 
-      $query = $this->db-prepare("DELETE FROM peliculas WHERE id = ? ");
+      $query = $this->db->prepare("DELETE FROM peliculas WHERE id = ? ");
       $query->execute([$id]);  
  
     }
@@ -57,22 +57,7 @@ class movieModel{
     
     }
 
-    public function orderDescendiente(){
 
-      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY id  DESC");
-      $query->execute();
-      return $query->fetchAll(PDO::FETCH_OBJ);
-    }
-
-
-
-    public function orderAscendiente(){
-
-      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY id  ASC");
-      $query->execute();
-
-      return $query->fetchAll(PDO::FETCH_OBJ);
-    }
 
 
 
@@ -105,24 +90,25 @@ class movieModel{
     }
 
 
-    public function orderAscByItems($item){
 
-      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY $item ASC ");
-      $query->execute();
 
-      return $query->fetchAll(PDO::FETCH_OBJ);
+    public function order($field , $order){
 
-    }
-    public function orderDescByItems($item){
-
-      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY $item DESC ");
+      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY $field $order ");
       $query->execute();
 
       return $query->fetchAll(PDO::FETCH_OBJ);
 
     }
 
+    public function orderByID($id , $order){
 
+      $query = $this->db->prepare("SELECT * FROM peliculas ORDER BY $id $order");
+      $query->execute();
+
+      return $query->fetchAll(PDO::FETCH_OBJ);
+
+    }
 
 
 }

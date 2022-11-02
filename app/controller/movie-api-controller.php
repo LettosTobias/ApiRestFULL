@@ -50,7 +50,7 @@ class movieApiController{
         $movie = $this->model->get($id);
         if($movie){
             $this->model->delete($id);
-            $this->view->response("Se borro correctamente la pelicula con ID $id" , $movie);
+            $this->view->response($movie , 200 , "Se borro correctamente la pelicula $movie->nombre");
         }
         else
             $this->view->response("El elemento con id $id no existe" , 404 );
@@ -70,7 +70,7 @@ class movieApiController{
 
             $id = $this->model->insert($body->nombre, $body->estreno, $body->descripcion , $body->id_genero_fk); 
             $movie = $this->model->get($id);
-            $this->view->response($movie, 201);
+            $this->view->response($movie , 201 , "Se inserto correctamente " );
         }
 
     }
@@ -109,28 +109,6 @@ class movieApiController{
     }
 
 
-    public function orderAsc(){
-
-       $movies = $this->model->orderAscendiente();
-       $this->view->response($movies);
-        
-
-    }
-
-
-
-
-
-
-
-    public function orderDesc(){
-
-       $movies = $this->model->orderDescendiente();
-       $this->view->response($movies);
-        
-
-    }
-
 
 
     public function filter($params){
@@ -154,23 +132,25 @@ class movieApiController{
 
 
 
-    public function orderAscByItem($params){
-
-        $item = $params[':CAMPO'];
+    public function order($params){
         
-        $movies = $this->model->orderAscByItems($item);
+        $field = $params[':FIELD'];
+        $order = $params[':ORDER'];
+        
+
+        $movies = $this->model->order($field , $order);
         $this->view->response($movies);
 
     }
 
+    public function orderByID($params){
 
+        $id = $params[':ID'];
+        $order = $params[':ORDER'];
 
-    public function orderDescByItem($params){
-
-        $item = $params[':CAMPO'];
-        
-        $movies = $this->model->orderDescByItems($item);
+        $movies = $this->model->orderByID($id , $order);
         $this->view->response($movies);
 
     }
+
 }
