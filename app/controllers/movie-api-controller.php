@@ -198,6 +198,9 @@ class movieApiController
     }
 
 
+
+
+
     public function deleteMovie($params = null)
     {
 
@@ -242,6 +245,10 @@ class movieApiController
 
 
 
+
+
+
+    
     public function updateMovie($params)
     {
 
