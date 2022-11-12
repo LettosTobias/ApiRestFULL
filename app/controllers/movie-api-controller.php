@@ -49,14 +49,22 @@ class movieApiController
                 $filter = $_GET['filter'];
                 
                 if (in_array($sort, $this->columns) && in_array($order, $this->order)) {
-                    
-                    $movies = $this->model->getAll( $filter , $sort, $order, $offset, $limit);
-                    $this->view->response($movies , 200);
+                    if($offset >= 0 && is_numeric($limit)){
+
+                        $movies = $this->model->getAll( $filter , $sort, $order, $offset, $limit);
+                        $this->view->response($movies , 200); 
+                    }
+                    else{
+                          $this->view->response("La paginacion no se puede realizar, ingrese bien los parametros" , 404);
+                    }
                 } 
                 else {
                     $this->view->response("Columna desconocida u orden distinto de ASC o DESC", 404);
                 }
             } 
+
+
+
 
 
             else if (!empty($_GET['sort']) && !empty($_GET['order']) && !empty($_GET['filter'])) {
@@ -80,43 +88,103 @@ class movieApiController
 
 
 
+            
+
             else if (!empty($_GET['sort']) && !empty($_GET['order'])  &&  !empty($_GET['limit']) && ($_GET['offset']) != null ) {
                 
                 $sort = $_GET['sort'];
-                $order = $_GET['order'];
-                $offset = $_GET['offset'];   
+                $order = $_GET['order']; 
                 $limit = $_GET['limit'];
+                $offset = (((($_GET['offset']) -1) * $limit));  
+              
+                
 
-
-                if (in_array($order, $this->order) && in_array($sort, $this->columns)){
+                if ($offset >= 0 && is_numeric($limit) && in_array($order, $this->order) && in_array($sort, $this->columns)){
 
                     $movies = $this->model->getAll(null ,$sort, $order, $offset, $limit);
                     $this->view->response($movies, 200);
                 
                 } 
                 else {
-                    $this->view->response("Columna desconocida u orden distinto de ASC o DESC", 404);
-              
+
+                    $this->view->response("Columna desconocida , orden distinto de ASC o DESC o la paginacion no se puede hacer", 404);
+
                 }
             }
 
 
 
-            else if (!empty($_GET['limit']) && ($_GET['offset']) != null ) {
-                
-
-                $offset = $_GET['offset'];   
+            else if (!empty($_GET['limit']) && ($_GET['offset'])!= null ) {
+             
                 $limit = $_GET['limit'];
+                $offset = (((($_GET['offset']) -1) * $limit));
+                
+                if($offset >= 0 && is_numeric($limit)){
 
-                $movies = $this->model->getAll(null , null , null , $offset, $limit);
+                     $movies = $this->model->getAll(null , null , null , $offset, $limit);
+                }
 
-                 if($movies){   
+                 if($movies && $offset >=0){   
 
                     $this->view->response($movies, 200);
                 
                  }
                  else
                     $this->view->response("No hay peliculas para paginar", 400);
+              
+                
+            }
+
+
+
+
+
+            else if (!empty($_GET['limit']) && ($_GET['offset'])!= null && !empty($_GET['filter'])) {
+             
+                $limit = $_GET['limit'];
+                $offset = (((($_GET['offset']) -1) * $limit));
+                $filter = $_GET['filter'];
+
+
+                if($offset >= 0 && is_numeric($limit)){
+
+                     $movies = $this->model->getAll($filter , null , null , $offset, $limit);
+                }
+
+                 if($movies && $offset >=0){   
+
+                    $this->view->response($movies, 200);
+                
+                 }
+                 else
+                    $this->view->response("No hay peliculas para paginar o el campo a filtrar no existe", 400);
+              
+                
+            }
+
+
+
+
+
+            else if (!empty($_GET['limit']) && ($_GET['offset'])!= null && !empty($_GET['order'])) {
+             
+                $limit = $_GET['limit'];
+                $offset = (((($_GET['offset']) -1) * $limit));
+                $order = $_GET['order'];
+
+
+                if($offset >= 0 && is_numeric($limit) && in_array($order , $this->order)){
+
+                     $movies = $this->model->getAll(null , null , $order , $offset, $limit);
+                }
+
+                 if($movies && $offset >=0){   
+
+                    $this->view->response($movies, 200);
+                
+                 }
+                 else
+                    $this->view->response("No hay peliculas para paginar o el orden no es ASC/DESC", 400);
               
                 
             }
@@ -145,6 +213,8 @@ class movieApiController
                     $this->view->response("Columna desconocida u orden distinto de ASC o DESC", 404);
                 }
             } 
+
+
 
 
 

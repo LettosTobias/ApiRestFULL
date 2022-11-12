@@ -1,20 +1,23 @@
 
 
+
+
+
 PAGINATION:
 
     Method = GET.
-    URL = api/movies?limit=(numero)&offset=(numero)
+    URL = api/movies?limit=(cantidad de columnas)&offset=(a partir de que pagina muestro)
     CODE = 200
 
 
 ORDER:
 
     Method = GET.
-    URL = api/movies?sort=(campo a order)&order(ASC O DESC)
+    URL = api/movies?sort=(campo a ordenar)&order(ASC O DESC)
     CODE = 200
 
 
-FILTER BY GENDER:
+FILTER:
 
     Method = GET.
     URL = api/movies?filter=(campo a filtrar)
@@ -45,3 +48,12 @@ EDIT A MOVIE:
     CODE = 201
 
 
+
+    SE PUEDEN PASAR VARIOS PARAMETROS JUNTOS:
+
+    Method = GET.
+    URL = api/movies?limit=(cantidad de columnas)&offset=(a partir de que pagina muestro)&filter(campo a filtrar)
+    URL = api/movies?limit=(cantidad de columnas)&offset=(a partir de que pagina muestro)&sort=(campo a ordernar)&order=(ASC o DESC)
+    URL = api/movies?sort=(campo a ordernar)&order=(ASC o DESC)&filter=(campo a filtrar)
+    URL = api/movies?limit=(cantidad de columnas)&offset(a partir de que pagina muestro)&order=(ASC o DESC)
+    URL = api/movies?limit=(cantidad de columnas)&offset=(a partir de que pagina muestro)&sort=(campo a ordernar)&order=(ASC o DESC)&filter=(campo a filtrar)
